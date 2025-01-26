@@ -1,101 +1,122 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { useCanvasExport } from "@/hooks/useCanvasExport";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+	const [bgColor, setBgColor] = useState("#6B4984");
+	const [showTitleBar, setShowTitleBar] = useState(true);
+	const [xPadding, setXPadding] = useState(5); // 5% padding by default
+	const [useTransparency, setUseTransparency] = useState(false);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const { drawWindow, exportImage } = useCanvasExport();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	const handleExport = () => {
+		if (!canvasRef.current) {
+			return;
+		}
+		exportImage(canvasRef.current);
+	};
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			return;
+		}
+
+		// Set canvas size (16:9 aspect ratio)
+		const width = 1920; // Full HD width
+		const height = 1080; // Full HD height
+		canvas.width = width;
+		canvas.height = height;
+
+		const ctx = canvas.getContext("2d");
+		if (!ctx) {
+			return;
+		}
+
+		// Clear canvas
+		ctx.clearRect(0, 0, width, height);
+
+		// Draw window
+		drawWindow(ctx, {
+			width,
+			height,
+			backgroundColor: bgColor,
+			showTitleBar,
+			xPadding,
+			useTransparency,
+		});
+	}, [bgColor, drawWindow, showTitleBar, xPadding, useTransparency]);
+
+	return (
+		<main className="min-h-screen flex flex-col items-center justify-center p-3 md:p-8 relative">
+			{/* Controls */}
+			<div className="fixed top-5 left-5 bg-white p-6 rounded-lg shadow-md space-y-6 min-w-80">
+				<div className="space-y-4">
+					<div className="flex flex-col gap-2">
+						<Label htmlFor="bgColor">Background Color</Label>
+						<input
+							type="color"
+							id="bgColor"
+							value={bgColor}
+							onChange={(e) => setBgColor(e.target.value)}
+							className="w-full h-10 rounded-md cursor-pointer"
+						/>
+					</div>
+
+					<div className="flex items-center justify-between">
+						<Label htmlFor="titleBar">Show Title Bar</Label>
+						<Switch
+							id="titleBar"
+							checked={showTitleBar}
+							onCheckedChange={setShowTitleBar}
+						/>
+					</div>
+
+					<div className="flex items-center justify-between">
+						<Label htmlFor="transparency">Use Transparency</Label>
+						<Switch
+							id="transparency"
+							checked={useTransparency}
+							onCheckedChange={setUseTransparency}
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<div className="flex items-center justify-between">
+							<Label htmlFor="padding">X-Axis Padding</Label>
+							<span className="text-sm text-muted-foreground">{xPadding}%</span>
+						</div>
+						<Slider
+							id="padding"
+							min={0}
+							max={40}
+							step={1}
+							value={[xPadding]}
+							onValueChange={(values: number[]) => setXPadding(values[0])}
+						/>
+					</div>
+				</div>
+
+				<Button onClick={handleExport} className="w-full">
+					Export PNG
+				</Button>
+			</div>
+
+			{/* Canvas Preview */}
+			<canvas
+				ref={canvasRef}
+				className="w-full max-w-7xl aspect-video rounded-lg shadow-2xl"
+				style={{
+					background:
+						"repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%) 50% / 20px 20px",
+				}}
+			/>
+		</main>
+	);
 }
