@@ -1,9 +1,9 @@
 "use client";
 
+import { ControlPanel } from "@/components/control-panel";
+import { PreviewCanvas } from "@/components/preview-canvas";
+import { useCanvasExport } from "@/hooks/use-canvas-export";
 import { useRef } from "react";
-import { useCanvasExport } from "@/hooks/useCanvasExport";
-import { PreviewCanvas } from "@/components/PreviewCanvas";
-import { ControlPanel } from "@/components/ControlPanel";
 
 export default function Home() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,24 +17,24 @@ export default function Home() {
 	};
 
 	return (
-		<div className="min-h-screen w-full flex flex-col">
+		<div className="h-screen w-full flex flex-col overflow-hidden">
 			{/* Navbar */}
-			<nav className="w-full border-b">
+			<nav className="w-full border-b flex-none">
 				<div className="container mx-auto px-4 h-14 flex items-center justify-center">
-					<h1 className="text-xl font-semibold">OBS Overlay Generator</h1>
+					<h1 className="text-xl font-semibold">Desktop Mockup Generator</h1>
 				</div>
 			</nav>
 
-			<div className="flex-1 flex flex-col md:flex-row">
+			<div className="flex-1 flex flex-col md:flex-row overflow-hidden">
 				{/* Sidebar for desktop */}
-				<aside className="hidden lg:block w-80 p-6 border-r">
-					<div className="sticky top-6">
+				<aside className="hidden lg:block w-80 border-r flex-none">
+					<div className="h-[calc(100vh-3.5rem)] overflow-y-auto p-6">
 						<ControlPanel onExport={handleExport} />
 					</div>
 				</aside>
 
 				{/* Main content */}
-				<main className="flex-1 p-4 md:p-8 flex flex-col lg:justify-center">
+				<main className="flex-1 p-4 md:p-8 flex flex-col lg:justify-center overflow-y-auto">
 					{/* Canvas Preview */}
 					<PreviewCanvas canvasRef={canvasRef} />
 

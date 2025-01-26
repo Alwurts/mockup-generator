@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import PlausibleProvider from "next-plausible";
+import type { ReactNode } from "react";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -13,21 +15,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "OBS Overlay Creator",
-	description: "Create OBS Overlays",
+	title: "Desktop Mockup Generator",
+	description: "Create Desktop Mockups",
 };
 
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode;
+	children: ReactNode;
 }>) {
 	return (
 		<html lang="en">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				{children}
+				<PlausibleProvider domain="mockup.alwurts.com" selfHosted>
+					{children}
+				</PlausibleProvider>
 			</body>
 		</html>
 	);

@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
+import { withPlausibleProxy } from "next-plausible";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+const nextConfig = withPlausibleProxy({
+	customDomain: "https://plausible.alwurts.com",
+})({});
 
 export default nextConfig;
