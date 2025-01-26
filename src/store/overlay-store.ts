@@ -38,13 +38,13 @@ interface OverlayActions {
 
 const initialState: OverlayState = {
 	isLoading: true,
-	bgColor: "#f0f0f0",
+	bgColor: "#bd13bd",
 	bgImage: null,
 	bgGradient: {
-		enabled: false,
-		startColor: "#ffffff",
-		endColor: "#e0e0e0",
-		direction: "to right",
+		enabled: true,
+		startColor: "#bd13bd",
+		endColor: "#E830E8",
+		direction: "to bottom",
 	},
 	showTitleBar: true,
 	xMargin: 10,

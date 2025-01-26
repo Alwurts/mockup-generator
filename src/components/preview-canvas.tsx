@@ -44,7 +44,7 @@ export function PreviewCanvas({ canvasRef }: PreviewCanvasProps) {
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) {
+		if (!canvas || isLoading) {
 			return;
 		}
 
@@ -96,6 +96,7 @@ export function PreviewCanvas({ canvasRef }: PreviewCanvasProps) {
 		shadowType,
 		windowRoundness,
 		canvasRef,
+		isLoading,
 	]);
 
 	if (isLoading) {
